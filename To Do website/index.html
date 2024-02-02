@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do Website</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      background-image: url("Images/poppies-174276_1280.jpg");
+    }
+
+    header {
+      background-color: orange;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    input#taskName {
+      margin: 5px;
+      height: 25px;
+      widht: 50%;
+      border-radius: 5px;
+    }
+    
+    section {
+      width: 60%;
+      margin: auto;
+      overflow: hidden;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 10px 0;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #999;
+    }
+
+    .actions {
+      display: flex;
+    }
+
+    .actions button {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      height: 180px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      margin: 20px;
+      width: 50%;
+      font-size: 25px;
+    }
+
+    button#taskbutton {
+      height: 50px;
+      width: 100px;
+      border-radius: 10px;
+      color: white;
+      background-color: red;
+      font-size: 25px;
+    }
+
+    input#dueDate {
+      height: 25px;
+      border-radius: 5px;
+      font-size: 18px;
+      margin: 2px;
+    }
+
+    button#task1 {
+      height: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>To-Do List</h1>
+  </header>
+
+  <section>
+    <div >
+        <button onclick="openModal()" id="taskbutton">Task</button>
+        <div class="modal" id="taskModal">
+           <div class="modal-content">
+              <label for="taskName">Task Name:</label>
+              <input type="text" id="taskName" placeholder="Enter task name">
+      
+              <label for="dueDate">Due Date:</label>
+              <input type="date" id="dueDate">
+
+            <div>
+               <button onclick="addTask()" id="task1">Add Task</button>
+               <button onclick="closeModal()" id="task1">Close</button>
+            </div>
+          </div>
+        </div>
+     </div>
+  <h2>Pending Tasks</h2>
+  <ul id="pendingList">
+    <!-- Pending tasks will be added here dynamically -->
+  </ul>
+  <h2>Completed Tasks</h2>
+  <ul id="completedList">
+    <!-- Completed tasks will be added here dynamically -->
+  </ul>
+  
+  </section>
+
+  <script>
+    function openModal() {
+      const taskModal = document.getElementById('taskModal');
+      taskModal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      const taskModal = document.getElementById('taskModal');
+      taskModal.style.display = 'none';
+    }
+
+    function addTask() {
+      const taskInput = document.getElementById('taskName');
+      const dueDateInput = document.getElementById('dueDate');
+
+      const taskText = taskInput.value.trim();
+      const dueDate = dueDateInput.value;
+
+      if (taskText !== '' && dueDate !== '') {
+        const currentDate = new Date().toLocaleString();
+        const pendingList = document.getElementById('pendingList');
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${taskText}</span>
+          <span>Due: ${dueDate}</span>
+          <span>${currentDate}</span>
+          <div class="actions">
+            <button onclick="completeTask(this.parentElement.parentElement)">Complete</button>
+            <button onclick="editTask(this.parentElement.parentElement)">Edit</button>
+            <button onclick="deleteTask(this.parentElement.parentElement)">Delete</button>
+          </div>
+         `;
+
+        pendingList.appendChild(li);
+        taskInput.value = '';
+        dueDateInput.value = '';
+        closeModal();
+      }
+    }
+
+    function completeTask(taskItem) {
+      const completedList = document.getElementById('completedList');
+      const actions = taskItem.querySelector('.actions');
+      actions.innerHTML = `<button onclick="deleteTask(this.parentElement.parentElement)">Delete</button>`;
+
+      completedList.appendChild(taskItem);
+      taskItem.classList.add('completed');
+    }
+
+    function editTask(taskItem) {
+      const taskText = taskItem.querySelector('span:first-child');
+      const newText = prompt('Edit task:', taskText.innerText);
+      if (newText !== null) {
+        taskText.innerText = newText;
+      }
+    }
+
+    function deleteTask(taskItem) {
+      taskItem.parentElement.removeChild(taskItem);
+    }
+  </script>
+
+</body>
+</html>
